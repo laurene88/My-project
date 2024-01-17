@@ -1214,18 +1214,23 @@ MonoBehaviour:
   emptyState:
     fillColor: {r: 0.16862746, g: 0.18039216, b: 0.19607845, a: 1}
     outlineColor: {r: 0.46274513, g: 0.44705886, b: 0.44705886, a: 1}
+    textColor: {r: 1, g: 1, b: 1, a: 1}
   occupiedState:
     fillColor: {r: 0.16862746, g: 0.18039216, b: 0.19607845, a: 1}
     outlineColor: {r: 0.46274513, g: 0.44705886, b: 0.44705886, a: 1}
+    textColor: {r: 1, g: 1, b: 1, a: 1}
   correctState:
-    fillColor: {r: 0.46791255, g: 0.8207547, b: 0.45425415, a: 1}
-    outlineColor: {r: 0.4666667, g: 0.8196079, b: 0.454902, a: 0}
+    fillColor: {r: 0.16862746, g: 0.18039216, b: 0.19607845, a: 1}
+    outlineColor: {r: 0.46274513, g: 0.44705886, b: 0.44705886, a: 1}
+    textColor: {r: 0, g: 0.8584906, b: 0.013466518, a: 1}
   wrongSpotState:
-    fillColor: {r: 0.90532225, g: 0.9150943, b: 0.4460365, a: 1}
-    outlineColor: {r: 0.9058824, g: 0.91372555, b: 0.44705886, a: 0}
+    fillColor: {r: 0.16862746, g: 0.18039216, b: 0.19607845, a: 1}
+    outlineColor: {r: 0.4431373, g: 0.4431373, b: 0.4431373, a: 1}
+    textColor: {r: 0.972549, g: 0.95440227, b: 0, a: 1}
   incorrectState:
-    fillColor: {r: 0.8773585, g: 0.39453536, b: 0.39453536, a: 1}
-    outlineColor: {r: 0.87843144, g: 0.39607847, b: 0.39607847, a: 0}
+    fillColor: {r: 0.16862746, g: 0.18039216, b: 0.19607845, a: 1}
+    outlineColor: {r: 0.4431373, g: 0.4431373, b: 0.4431373, a: 1}
+    textColor: {r: 1, g: 0, b: 0, a: 1}
   invalidWordText: {fileID: 58973717}
   tryAgainButton: {fileID: 533528278}
   newGameButton: {fileID: 1340089828}

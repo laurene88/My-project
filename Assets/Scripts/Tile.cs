@@ -14,10 +14,11 @@ public class Tile : MonoBehaviour
     {
         public Color fillColor; 
         public Color outlineColor;
+        public Color textColor;
     }
 
     //public getter, private setter
-    public char letter { get; private set;}
+    public char digit { get; private set;}
     public State state { get; private set;}
 
     private TextMeshProUGUI text;
@@ -32,14 +33,15 @@ public class Tile : MonoBehaviour
     outline = GetComponent<Outline>();
     }
 
-    public void SetLetter(char c){
-        this.letter = c;
-        text.text = c.ToString();
+    public void SetDigit(char n){
+        this.digit = n;
+        text.text = n.ToString();
     }
 
     public void SetState(State state){
         this.state = state;
         fill.color = state.fillColor;
         outline.effectColor = state.outlineColor;
+        text.color = state.textColor;
     }
 }

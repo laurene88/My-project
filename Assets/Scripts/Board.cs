@@ -7,16 +7,18 @@ using UnityEngine.UI;
 public class Board : MonoBehaviour
 {
     private static readonly KeyCode[] SUPPORTED_KEYS = new KeyCode[]{
-        KeyCode.A, KeyCode.B, KeyCode.C, KeyCode.D, KeyCode.E,  KeyCode.F, 
-        KeyCode.G,  KeyCode.H, KeyCode.I, KeyCode.J,  KeyCode.K,  KeyCode.L, 
-        KeyCode.M, KeyCode.N, KeyCode.O, KeyCode.P, KeyCode.Q,  KeyCode.R, 
-        KeyCode.S,  KeyCode.T, KeyCode.U,  KeyCode.V,  KeyCode.W, KeyCode.X, 
-        KeyCode.Y, KeyCode.Z
-    };
+        // KeyCode.A, KeyCode.B, KeyCode.C, KeyCode.D, KeyCode.E,  KeyCode.F, 
+        // KeyCode.G,  KeyCode.H, KeyCode.I, KeyCode.J,  KeyCode.K,  KeyCode.L, 
+        // KeyCode.M, KeyCode.N, KeyCode.O, KeyCode.P, KeyCode.Q,  KeyCode.R, 
+        // KeyCode.S,  KeyCode.T, KeyCode.U,  KeyCode.V,  KeyCode.W, KeyCode.X, 
+        // KeyCode.Y, KeyCode.Z, 
+        KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, 
+        KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, 
+        KeyCode.Alpha9, KeyCode.Alpha0
+        };
 
-    private string[] solutions;
-    private string[] validWords; //valid words you can guess.
-    private string word;
+
+    private string answerNumber;
 
     private Row[] rows;
     private int rowIndex;
@@ -44,7 +46,6 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
-        LoadData();
         NewGame();
     }
 
@@ -52,7 +53,7 @@ public class Board : MonoBehaviour
     public void NewGame()
     {
         ClearBoard();
-        setRandomWord();
+        setRandomNumber();
         enabled = true;
 
     }
@@ -60,28 +61,14 @@ public class Board : MonoBehaviour
     public void TryAgain()
     {
         ClearBoard();
-        //keep same word
+        //keep same answerNumber
         enabled = true;
         
     }
 
-    private void LoadData()
-    {
-        //get textfile from resources folder.
-        TextAsset textFile = Resources.Load("Official_wordle_all") as TextAsset;
-        validWords = textFile.text.Split('\n'); //read whole doc, splitting on enters
-    
-        //just reassigning the same variable
-        textFile = Resources.Load("Official_wordle_common") as TextAsset;
-        solutions = textFile.text.Split('\n'); //read whole doc, splitting on enters
-    }
 
-
-    private void setRandomWord()
-    {
-        word = solutions[Random.Range(0, solutions.Length)];
-        // as safety, make sure lower case & trimmed.
-        word = word.ToLower().Trim();
+    private void setRandomNumber(){
+        answerNumber = Random.Range(10000,100000).ToString();
     }
 
     private void Update()
@@ -95,7 +82,7 @@ public class Board : MonoBehaviour
             // so doesnt go into negatives/errors.
             colIndex = Mathf.Max(colIndex -1 , 0);
             currentRow.tiles[colIndex].SetState(emptyState);
-            currentRow.tiles[colIndex].SetLetter('\0');
+            currentRow.tiles[colIndex].SetDigit('\0');
 
             invalidWordText.gameObject.SetActive(false);
 
@@ -112,7 +99,7 @@ public class Board : MonoBehaviour
         { 
             for (int i = 0; i < SUPPORTED_KEYS.Length; i++){
             if (Input.GetKeyDown(SUPPORTED_KEYS[i])){
-                currentRow.tiles[colIndex].SetLetter((char)SUPPORTED_KEYS[i]);
+                currentRow.tiles[colIndex].SetDigit((char)SUPPORTED_KEYS[i]);
                 currentRow.tiles[colIndex].SetState(occupiedState);
                 colIndex++;
                 break;
@@ -125,41 +112,34 @@ public class Board : MonoBehaviour
     private void SubmitRow(Row row)
     {
         //starting with a simple logic. We will later do edge cases.
-        //compare every tile w the letter in the word
+        //compare every tile w the digit in the answerNumber
         // Edge cases about repeat letters/if only 1 but guessed twice.
         // my suggestion move between two arrays?
         //OLD WAY:
-        // for (int i = 0; i < row.tiles.Length ; i++){
-        //     Tile tile = row.tiles[i];
-        //     if (tile.letter == word[i]){
-        //         tile.SetState(correctState);
-        //     } else if (word.Contains(tile.letter.ToString())){
+        //  for (int i = 0; i < row.tiles.Length ; i++){
+        //      Tile tile = row.tiles[i];
+        //      if (tile.digit == answerNumber[i]){
+        //          tile.SetState(correctState);
+        //      } else if (answerNumber.Contains(tile.digit.ToString())){
         //             tile.SetState(wrongSpotState);
-        //     } else {
-        //         tile.SetState(incorrectState);
-        //     }
-        // }
+        //      } else {
+        //          tile.SetState(incorrectState);
+        //      }
+        //  }
 
-        if (!IsValidWord(row.word)){
-            // if it is not valid, dont allow it. Need to feedback to user.
-            invalidWordText.gameObject.SetActive(true);
-            return;
-        }
+        string remaining = answerNumber;
 
-        string remaining = word;
-
-    
         // For loop 1, check if correct or incorrect.
         for (int i = 0; i < row.tiles.Length; i++){
             Tile tile = row.tiles[i];
-            if (tile.letter == word[i]){
+            if (tile.digit == answerNumber[i]){
                 tile.SetState(correctState);
                 // remove at index i, 1 thing
                 remaining = remaining.Remove(i,1);
                 // to keep length the same, insert a space.
                 remaining = remaining.Insert(i," ");
             }
-            else if (!word.Contains(tile.letter.ToString())){
+            else if (!answerNumber.Contains(tile.digit.ToString())){
                 tile.SetState(incorrectState);
             }
         }
@@ -171,13 +151,13 @@ public class Board : MonoBehaviour
             // as cant compare struct things so easily, would have to make
             // own comparable method.
             if (tile.state != correctState && tile.state != incorrectState){
-                //check if remaining word contains letter we know theres a 2nd instance
-                if (remaining.Contains(tile.letter.ToString())){
-                    //2nd of that letter
+                //check if remaining answerNumber contains digit we know theres a 2nd instance
+                if (remaining.Contains(tile.digit.ToString())){
+                    //2nd of that digit
                     tile.SetState(wrongSpotState);
 
-                    //find actual letter in word & remove it.
-                    int index = remaining.IndexOf(tile.letter);
+                    //find actual digit in answerNumber & remove it.
+                    int index = remaining.IndexOf(tile.digit);
                     remaining = remaining.Remove(index,1);
                     remaining = remaining.Insert(index," ");
                 }
@@ -187,7 +167,7 @@ public class Board : MonoBehaviour
                 }
             }
 
-        }
+       }
 
         if (HasWon(row)){
             enabled = false;
@@ -202,15 +182,6 @@ public class Board : MonoBehaviour
         }
     }
 
-    // check if word is in valid list, called from submit row.
-    private bool IsValidWord(string word){
-        for (int i = 0; i <validWords.Length; i++){
-            if (word == validWords[i]){
-                return true;
-            }
-            }
-            return false;
-        }
 
     private bool HasWon(Row row)
     {
@@ -230,7 +201,7 @@ public class Board : MonoBehaviour
         {
             for (int col = 0; col < rows[row].tiles.Length; col++)
             {
-                rows[row].tiles[col].SetLetter('\0');
+                rows[row].tiles[col].SetDigit('\0');
                 rows[row].tiles[col].SetState(emptyState);
             }
         }
