@@ -37,11 +37,13 @@ public class Board : MonoBehaviour
     public Button newGameButton;
 
 
+    public GameObject gm; 
+
     private void Awake()
     {
         rows = GetComponentsInChildren<Row>();
-
     }
+
     // Update is called once per frame
 
     private void Start()
@@ -175,7 +177,8 @@ public class Board : MonoBehaviour
 
         rowIndex++;
         colIndex = 0;
-
+        gm.GetComponent<GM>().NextPlayersTurn();
+        
         if (rowIndex >= rows.Length){
             enabled = false;
             //just disable script when you reach the end so wont call update anymore.
