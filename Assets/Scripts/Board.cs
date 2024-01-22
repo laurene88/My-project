@@ -19,10 +19,12 @@ public class Board : MonoBehaviour
 
 
     private string answerNumber;
+    private bool flippingTiles = false;
 
     private Row[] rows;
     private int rowIndex;
     private int colIndex;
+
 
     [Header("States")]
     public Tile.State emptyState;
@@ -77,36 +79,38 @@ public class Board : MonoBehaviour
     {
         Row currentRow = rows[rowIndex];
 
-        if (Input.GetKeyDown(KeyCode.Backspace)){
-            // need to delete index first to go back, as cursor auto moves.
-            // will choose max of the two. so clamps on lower bound, will always take 0.
-            // Clamp function is double bounding in one function call.
-            // so doesnt go into negatives/errors.
-            colIndex = Mathf.Max(colIndex -1 , 0);
-            currentRow.tiles[colIndex].SetState(emptyState);
-            currentRow.tiles[colIndex].SetDigit('\0');
+        if (flippingTiles == false){
+            if (Input.GetKeyDown(KeyCode.Backspace)){
+                // need to delete index first to go back, as cursor auto moves.
+                // will choose max of the two. so clamps on lower bound, will always take 0.
+                // Clamp function is double bounding in one function call.
+                // so doesnt go into negatives/errors.
+                colIndex = Mathf.Max(colIndex -1 , 0);
+                currentRow.tiles[colIndex].SetState(emptyState);
+                currentRow.tiles[colIndex].SetDigit('\0');
 
-            invalidWordText.gameObject.SetActive(false);
+                invalidWordText.gameObject.SetActive(false);
 
-        }
-
-        else if (colIndex >= currentRow.tiles.Length){
-            // if reaches the end of the row & clicks enter, submit
-            if (Input.GetKeyDown(KeyCode.Return)){
-                SubmitRow(currentRow);
             }
-        }
 
-        else
-        { 
-            for (int i = 0; i < SUPPORTED_KEYS.Length; i++){
-            if (Input.GetKeyDown(SUPPORTED_KEYS[i])){
-                currentRow.tiles[colIndex].SetDigit((char)SUPPORTED_KEYS[i]);
-                currentRow.tiles[colIndex].SetState(occupiedState);
-                colIndex++;
-                break;
+            else if (colIndex >= currentRow.tiles.Length){
+                // if reaches the end of the row & clicks enter, submit
+                if (Input.GetKeyDown(KeyCode.Return)){
+                    SubmitRow(currentRow);
                 }
-            }   
+            }
+
+            else
+            { 
+                for (int i = 0; i < SUPPORTED_KEYS.Length; i++){
+                if (Input.GetKeyDown(SUPPORTED_KEYS[i])){
+                    currentRow.tiles[colIndex].SetDigit((char)SUPPORTED_KEYS[i]);
+                    currentRow.tiles[colIndex].SetState(occupiedState);
+                    colIndex++;
+                    break;
+                    }
+                }   
+            }
         }
     }
 
@@ -189,12 +193,16 @@ public class Board : MonoBehaviour
         }
     }
 
+    //TODO DOESNT WORK ON SECOND GAME??
+    // TODO WANT TO PUT A HOLD ON ENTERING UNTIL ALL ARE FLIPPED.
     IEnumerator FlipTiles(Row row){
+        flippingTiles = true;
         for (int i = 0; i < row.tiles.Length; i++){
             row.tiles[i].RotateAnimation();
             row.tiles[i].ChangeState();
             yield return new WaitForSeconds(.5f);
         }
+        flippingTiles = false;
     }
 
     private bool HasWon(Row row)
@@ -217,6 +225,8 @@ public class Board : MonoBehaviour
             {
                 rows[row].tiles[col].SetDigit('\0');
                 rows[row].tiles[col].SetState(emptyState);
+                rows[row].tiles[col].ChangeState();
+
             }
         }
         rowIndex = 0;

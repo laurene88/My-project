@@ -53,7 +53,6 @@ public class Tile : MonoBehaviour
         fill.color = state.fillColor;
         outline.effectColor = state.outlineColor;
         text.color = state.textColor; 
-        RotateAnimation();
     }
 
     public void RotateAnimation(){
