@@ -136,6 +136,7 @@ public class Board : MonoBehaviour
             Tile tile = row.tiles[i];
             if (tile.digit == answerNumber[i]){
                 tile.SetState(correctState);
+
                 // remove at index i, 1 thing
                 remaining = remaining.Remove(i,1);
                 // to keep length the same, insert a space.
@@ -143,6 +144,7 @@ public class Board : MonoBehaviour
             }
             else if (!answerNumber.Contains(tile.digit.ToString())){
                 tile.SetState(incorrectState);
+
             }
         }
         // For loop 2, check remaining letters to see if in right spot or not.
@@ -168,8 +170,10 @@ public class Board : MonoBehaviour
                     tile.SetState(incorrectState);
                 }
             }
+        }
 
-       }
+        StartCoroutine(FlipTiles(row)); 
+            //HERE IT IS***
 
         if (HasWon(row)){
             enabled = false;
@@ -185,6 +189,13 @@ public class Board : MonoBehaviour
         }
     }
 
+    IEnumerator FlipTiles(Row row){
+        for (int i = 0; i < row.tiles.Length; i++){
+            row.tiles[i].RotateAnimation();
+            row.tiles[i].ChangeState();
+            yield return new WaitForSeconds(.5f);
+        }
+    }
 
     private bool HasWon(Row row)
     {
@@ -211,7 +222,6 @@ public class Board : MonoBehaviour
         rowIndex = 0;
         colIndex = 0;
     }
-
 
     private void OnEnable(){
         tryAgainButton.gameObject.SetActive(false);

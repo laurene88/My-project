@@ -17,6 +17,8 @@ public class Tile : MonoBehaviour
         public Color textColor;
     }
 
+    private Animator _animator;
+
     //public getter, private setter
     public char digit { get; private set;}
     public State state { get; private set;}
@@ -31,6 +33,10 @@ public class Tile : MonoBehaviour
     text = GetComponentInChildren<TextMeshProUGUI>();
     fill = GetComponent<Image>();
     outline = GetComponent<Outline>();
+    _animator = GetComponent<Animator>();
+    if (_animator == null){
+        Debug.LogError("'_animator' is NULL!!! OH NO");
+    }
     }
 
     public void SetDigit(char n){
@@ -38,10 +44,19 @@ public class Tile : MonoBehaviour
         text.text = n.ToString();
     }
 
+    //TODO add an animation here while it changes states.
     public void SetState(State state){
         this.state = state;
+        }
+
+    public void ChangeState(){
         fill.color = state.fillColor;
         outline.effectColor = state.outlineColor;
-        text.color = state.textColor;
+        text.color = state.textColor; 
+        RotateAnimation();
+    }
+
+    public void RotateAnimation(){
+        _animator.SetTrigger("RotateTrigger"); 
     }
 }
