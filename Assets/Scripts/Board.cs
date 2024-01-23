@@ -44,6 +44,7 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         rows = GetComponentsInChildren<Row>();
+        //TODO put GM here.
     }
 
     // Update is called once per frame
@@ -176,34 +177,45 @@ public class Board : MonoBehaviour
             }
         }
 
+        //TODO EVERYTHING needs to wait for this. - eg not change player until done.
         StartCoroutine(FlipTiles(row)); 
-            //HERE IT IS***
-
-        if (HasWon(row)){
-            enabled = false;
-        }
-
-        rowIndex++;
-        colIndex = 0;
-        gm.GetComponent<GM>().NextPlayersTurn();
-        
-        if (rowIndex >= rows.Length){
-            enabled = false;
-            //just disable script when you reach the end so wont call update anymore.
-        }
     }
 
-    //TODO DOESNT WORK ON SECOND GAME??
-    // TODO WANT TO PUT A HOLD ON ENTERING UNTIL ALL ARE FLIPPED.
+
+    //TODO ANIM DOESNT WORK ON SECOND GAME??
+    //TODO want hold on ALL ACTIONS UNTIL FLIPPED, entering & change player.
     IEnumerator FlipTiles(Row row){
         flippingTiles = true;
+        Debug.Log("im flipping tiles");
         for (int i = 0; i < row.tiles.Length; i++){
             row.tiles[i].RotateAnimation();
             row.tiles[i].ChangeState();
             yield return new WaitForSeconds(.5f);
         }
         flippingTiles = false;
+        AfterRowSubmission(row);
     }
+
+
+    public void AfterRowSubmission(Row row){
+        if (HasWon(row)){
+            //TODO needs an animation/scores.
+            enabled = false;
+            gm.GetComponent<GM>().SetPlayersOff();
+        }
+            
+        gm.GetComponent<GM>().NextPlayersTurn();
+       
+        rowIndex++;
+        colIndex = 0;
+
+        if (rowIndex >= rows.Length){
+            enabled = false;
+            gm.GetComponent<GM>().SetPlayersOff();
+            //just disable script when you reach the end so wont call update anymore.
+        }
+    }
+
 
     private bool HasWon(Row row)
     {
@@ -232,6 +244,7 @@ public class Board : MonoBehaviour
         rowIndex = 0;
         colIndex = 0;
     }
+
 
     private void OnEnable(){
         tryAgainButton.gameObject.SetActive(false);

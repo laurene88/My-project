@@ -11,10 +11,19 @@ public class GM : MonoBehaviour
 
     public Image p1;
     public Image p2;
+    public Color p1Color;
+    public Color p1ColorOff;
+    public Color p2Color;
+    public Color p2ColorOff;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        p1Color.a = 1;
+        p2Color.a = 1;
+        p1.color = p1Color;
+        p2.color = p2Color;
         SetPlayerOne();
     }
 
@@ -35,14 +44,19 @@ public class GM : MonoBehaviour
 
     private void SetPlayerOne(){
         currentPlayer = Player.ONE;
-        p1.color = Color.yellow;
-        p2.color = Color.black;
-        
+        p1.color = p1Color;
+        p2.color = p2ColorOff;
     }
 
     private void SetPlayerTwo(){
         currentPlayer = Player.TWO;
-        p1.color = Color.black;
-        p2.color = Color.yellow;
+        p2.color = p2Color;
+        p1.color = p1ColorOff;
+    }
+
+    //TODO this needs to be public to be called atm?
+    public void SetPlayersOff(){
+        p1.color = p1ColorOff;
+        p2.color = p2ColorOff;
     }
 }

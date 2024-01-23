@@ -2161,6 +2161,10 @@ MonoBehaviour:
   currentPlayer: 0
   p1: {fileID: 642901215}
   p2: {fileID: 118060214}
+  p1Color: {r: 0.7937094, g: 0, b: 0.990566, a: 1}
+  p1ColorOff: {r: 0.26723114, g: 0.20469917, b: 0.2830189, a: 1}
+  p2Color: {r: 0, g: 1, b: 0.73076797, a: 1}
+  p2ColorOff: {r: 0.22635575, g: 0.3301887, b: 0.30209273, a: 1}
 --- !u!1001 &1861510844
 PrefabInstance:
   m_ObjectHideFlags: 0

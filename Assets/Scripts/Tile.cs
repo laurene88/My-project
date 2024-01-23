@@ -57,5 +57,6 @@ public class Tile : MonoBehaviour
 
     public void RotateAnimation(){
         _animator.SetTrigger("RotateTrigger"); 
+        Debug.Log("animation called");
     }
 }
