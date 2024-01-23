@@ -51,24 +51,32 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
-        NewGame();
+        SetSingleGame();
     }
 
 
-    public void NewGame()
-    {
+    public void SetSingleGame(){
         ClearBoard();
         setRandomNumber();
         enabled = true;
-
     }
 
-    public void TryAgain()
+
+    //keep scores, get next number, next player has first go.
+    // IS THIS THE BEST GAME PLAY IDEA THOUGH?? EACH WINNER THEN GETS 2ND GO EACH TIME.
+    public void NewGame()
+    {   
+        SetSingleGame();
+        gm.GetComponent<GM>().NextPlayersTurn();
+    }
+
+    //reset best of 5 games.
+    public void ResetGame()
     {
         ClearBoard();
-        //keep same answerNumber
+        setRandomNumber();
+        gm.GetComponent<GM>().SetupGameSeries();
         enabled = true;
-        
     }
 
 
@@ -177,16 +185,14 @@ public class Board : MonoBehaviour
             }
         }
 
-        //TODO EVERYTHING needs to wait for this. - eg not change player until done.
         StartCoroutine(FlipTiles(row)); 
     }
 
 
     //TODO ANIM DOESNT WORK ON SECOND GAME??
-    //TODO want hold on ALL ACTIONS UNTIL FLIPPED, entering & change player.
     IEnumerator FlipTiles(Row row){
         flippingTiles = true;
-        Debug.Log("im flipping tiles");
+        //Debug.Log("im flipping tiles");
         for (int i = 0; i < row.tiles.Length; i++){
             row.tiles[i].RotateAnimation();
             row.tiles[i].ChangeState();
@@ -198,24 +204,22 @@ public class Board : MonoBehaviour
 
 
     public void AfterRowSubmission(Row row){
+        //check if has won
         if (HasWon(row)){
-            //TODO needs an animation/scores.
+            gm.GetComponent<GM>().AddToScore();
             enabled = false;
             gm.GetComponent<GM>().SetPlayersOff();
-        }
-            
-        gm.GetComponent<GM>().NextPlayersTurn();
-       
-        rowIndex++;
-        colIndex = 0;
-
-        if (rowIndex >= rows.Length){
-            enabled = false;
-            gm.GetComponent<GM>().SetPlayersOff();
-            //just disable script when you reach the end so wont call update anymore.
+        } else { //if not keep progressing
+            rowIndex++;
+            colIndex = 0;
+             if (rowIndex >= rows.Length){ // then check if have lost
+                enabled = false;
+                gm.GetComponent<GM>().SetPlayersOff();
+            } else { // has not won or lost, keep playing
+                 gm.GetComponent<GM>().NextPlayersTurn();
+            }
         }
     }
-
 
     private bool HasWon(Row row)
     {
@@ -227,7 +231,6 @@ public class Board : MonoBehaviour
         }
         return true;
     }
-
 
     public void ClearBoard()
     {
