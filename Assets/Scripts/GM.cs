@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GM : MonoBehaviour
 {
@@ -26,6 +27,15 @@ public class GM : MonoBehaviour
     public Sprite tally3;
     public Sprite tally4;
     public Sprite tally5;
+
+    public GameObject winnerPanel;
+    public TextMeshProUGUI winnerText;
+
+
+    void Awake(){
+   //     winnerText = winnerPanel.GetComponent<TextMeshProUGUI>(); wasnt working?
+        winnerPanel.SetActive(false);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -119,6 +129,7 @@ public class GM : MonoBehaviour
         }
     }
 
+    //TODO DEBUG CHANGED TO TWO GAMES
     public void CheckHasWonFiveGames()
     {
         if (p1score == 5){
@@ -131,8 +142,12 @@ public class GM : MonoBehaviour
 
 
     public void FiveGamesWon(Player player){
-        Debug.Log("WINNER:"+player);
+       winnerText.text = ("Player "+player+" has won the game!");
+        winnerPanel.SetActive(true);
         SetPlayersOff();
     }
 
+    public void WinnerPanelOK(){
+        winnerPanel.SetActive(false);
+    }
 }
