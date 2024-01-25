@@ -33,7 +33,6 @@ public class GM : MonoBehaviour
 
 
     void Awake(){
-   //     winnerText = winnerPanel.GetComponent<TextMeshProUGUI>(); wasnt working?
         winnerPanel.SetActive(false);
     }
 
@@ -133,16 +132,19 @@ public class GM : MonoBehaviour
     public void CheckHasWonFiveGames()
     {
         if (p1score == 5){
-            FiveGamesWon(Player.ONE);
+            FiveGamesWon(Player.ONE, p1Color);
         }
         if (p2score == 5){
-            FiveGamesWon(Player.TWO);
+            FiveGamesWon(Player.TWO, p2Color);
         }
     }
 
 
-    public void FiveGamesWon(Player player){
+    public void FiveGamesWon(Player player, Color c){
        winnerText.text = ("Player "+player+" has won the game!");
+       winnerText.color = c;
+       Outline wpoutline = winnerPanel.GetComponent<Outline>();
+        wpoutline.effectColor = c;
         winnerPanel.SetActive(true);
         SetPlayersOff();
     }
